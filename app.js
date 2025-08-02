@@ -27,8 +27,9 @@ async function main(){
     await mongoose.connect(mongo_url);
 };
 
-app.get('/',(req,res)=>{
-    res.send("Iam Home start");
+app.get('/',async (req,res)=>{
+    const allListings = await Listing.find();
+    res.render('listings/index.ejs',{allListings});
 })
 
 
