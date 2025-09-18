@@ -32,6 +32,7 @@ async function main(){
     await mongoose.connect(mongo_url);
 };
 
+<<<<<<< HEAD
 const sessionOptions={
     secret:"hi123456789Tarun",
     resave:false,
@@ -40,6 +41,36 @@ const sessionOptions={
         expires:Date.now()+7*24*60*60*1000,
         maxAge:7*24*60*60*1000,
         HttpOnly:true,
+=======
+app.get('/',async (req,res)=>{
+    const allListings = await Listing.find();
+    res.render('listings/index.ejs',{allListings});
+})
+
+
+// app.get('/testListing',wrapAsync( async (req,res)=>{
+//     let sampleListing =new Listing({
+//         title: "My New Villa",
+//         description:"By the Beach",
+//         price:1200,
+//         location:"Calangute ,Goa",
+//         country: "India"
+//     });
+//     await sampleListing.save();
+//     console.log("sample saved");
+//     res.send("success testing !");
+// }));
+
+const validateListing =(req,res,next)=>{
+    const {error} = listingSchema.validate(req.body); //using Joi
+    if (error) {
+        
+        const msg = error.details.map(el => el.message).join(',');
+        
+        throw new ExpressError(400, msg);
+    }else{
+        next();
+>>>>>>> 104abcc163d02db66c575816f5267185710419ce
     }
 }
 
