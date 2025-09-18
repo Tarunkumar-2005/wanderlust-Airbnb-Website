@@ -1,0 +1,68 @@
+.starability-fade {
+  display: inline-block;
+  direction: rtl;
+  font-size: 2rem;
+  unicode-bidi: bidi-override;
+}
+
+.starability-fade input {
+  display: none;
+}
+
+.starability-fade label {
+  display: inline-block;
+  cursor: pointer;
+  width: 1em;
+  color: #ccc; /* empty star color */
+}
+
+.starability-fade label:before {
+  content: "★";
+}
+
+.starability-fade input:checked ~ label,
+.starability-fade label:hover,
+.starability-fade label:hover ~ label {
+  color: gold; /* filled star color */
+}
+
+
+.starability-result {
+  position: relative;
+  display: inline-block;
+  font-size: 24px;
+  font-family: "Arial", sans-serif;
+  line-height: 1;
+  --rating: 0; /* default */
+}
+
+.starability-result::before {
+  content: "★★★★★"; /* base stars */
+  letter-spacing: 3px;
+  background: linear-gradient(
+    90deg,                          /* → left to right fill */
+    gold calc(var(--rating) / 5 * 100%),
+    #ccc calc(var(--rating) / 5 * 100%)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+
+.starability-result::after {
+  content: "★★★★★";     /* overlay filled stars */
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: gold;
+  width: 0;             /* default no fill */
+  overflow: hidden;
+}
+
+/* Map data-rating to width in stars (each star = 20%) */
+.starability-result[data-rating="1"]::after { width: 20%; }
+.starability-result[data-rating="2"]::after { width: 40%; }
+.starability-result[data-rating="3"]::after { width: 60%; }
+.starability-result[data-rating="4"]::after { width: 80%; }
+.starability-result[data-rating="5"]::after { width: 100%; }
