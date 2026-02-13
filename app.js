@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV!="production"){
+    require('dotenv').config();
+}
+
 const express =require('express');
 const app = express();
 const mongoose = require('mongoose')
@@ -6,6 +10,7 @@ const path = require('path');
 const methodoverride= require('method-override');
 const ejsMate= require('ejs-mate');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -21,7 +26,8 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodoverride('_method'));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public"))); 
-const mongo_url="mongodb://127.0.0.1:27017/wanderlust";
+
+const dbUrl=process.env.ATLASDB_URL;
 main().then(()=>{
     console.log("mongodb connected");
 }).catch((err)=>{ 
@@ -29,50 +35,35 @@ main().then(()=>{
 });
 
 async function main(){
-    await mongoose.connect(mongo_url);
+    await mongoose.connect(dbUrl); //here dburl 
 };
 
-<<<<<<< HEAD
+const store = MongoStore.create(
+    {
+        mongoUrl:dbUrl,
+        crypto:{
+            secret:process.env.SECRET,
+        },
+        touchAfter: 24 * 60 * 60  //in seconds
+    }
+);
+
+store.on("error",()=>{
+    console.log("Error in MONGO SESSION STORE");
+});
+
 const sessionOptions={
-    secret:"hi123456789Tarun",
+    store,
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
         expires:Date.now()+7*24*60*60*1000,
         maxAge:7*24*60*60*1000,
         HttpOnly:true,
-=======
-app.get('/',async (req,res)=>{
-    const allListings = await Listing.find();
-    res.render('listings/index.ejs',{allListings});
-})
-
-
-// app.get('/testListing',wrapAsync( async (req,res)=>{
-//     let sampleListing =new Listing({
-//         title: "My New Villa",
-//         description:"By the Beach",
-//         price:1200,
-//         location:"Calangute ,Goa",
-//         country: "India"
-//     });
-//     await sampleListing.save();
-//     console.log("sample saved");
-//     res.send("success testing !");
-// }));
-
-const validateListing =(req,res,next)=>{
-    const {error} = listingSchema.validate(req.body); //using Joi
-    if (error) {
-        
-        const msg = error.details.map(el => el.message).join(',');
-        
-        throw new ExpressError(400, msg);
-    }else{
-        next();
->>>>>>> 104abcc163d02db66c575816f5267185710419ce
     }
 }
+
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -85,14 +76,15 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.success=req.flash('success');
     res.locals.error=req.flash('error');
-    res.locals.currUser=req.user;
+    res.locals.currUser=req.user || null;
     next();
 })
 
+
 app.get('/',async (req,res)=>{
-    // const allListings = await Listing.find();
-    // res.render('listings/index.ejs',{allListings});
-    res.send("Home Page");
+    const allListings = await Listing.find();
+    res.render('listings/index.ejs',{allListings});
+
 })
 
 app.use('/listings',listingRouter);
@@ -108,17 +100,7 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error.ejs',{message});
 });
 
+
 app.listen(3000,()=>{
     console.log("server listening at port 3000");
 });
-
-
-
-
-
-
-
-
-
-
-
