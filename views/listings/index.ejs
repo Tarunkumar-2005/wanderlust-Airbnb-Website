@@ -35,7 +35,7 @@
         }
 </style>
 <body>
-    <div id="filters"> 
+    <!-- <div id="filters"> 
         <div class="filter">
             <div><i class="fa-solid fa-fire"></i></div>
             <p>Trending</p>
@@ -60,8 +60,8 @@
             <div class="form-check-reverse form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
                 <label class="form-check-label" for="flexSwitchCheckDefault" >Display total after taxes</label>
-        </div>
-    </div>
+            </div>
+    </div> -->
     <div class="row row-cols-lg-3 row-cols-md-2 row-cold-sm-1 mt-1"> 
         
         <% for(let list of allListings ){ %>
@@ -74,14 +74,14 @@
                         <b><%= list.title %></b> 
                         <br>
                         <%= list.price.toLocaleString("en-IN") %>/night
-                        <i class="tax-info">&nbsp; +18% GST</i>
+                        <!-- <i class="tax-info">&nbsp; +18% GST</i> -->
                     </p>
                 </div>
             </div>
             </a>
         <% } %>
     </div>
-    <script>
+    <!-- <script>
         let taxSwitch = document.getElementById('flexSwitchCheckDefault');
         taxSwitch.addEventListener('click', function() {
             let taxInfo = document.getElementsByClassName('tax-info');
@@ -91,5 +91,5 @@
                     info.style.display = "inline";
             }
         });
-    </script>
+    </script> -->
 </body>

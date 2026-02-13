@@ -13,7 +13,7 @@ module.exports.signUp = async (req,res)=>{
     //console.log(registeredUser);
     req.login(registeredUser,(err)=>{
         if(err) return next(err);
-        req.flash('success','Welcome to Wanderlust!');
+        req.flash('success','Welcome to Stay-Wander!');
         res.redirect('/listings');
     });
     
@@ -27,7 +27,7 @@ module.exports.renderLoginForm = (req,res)=>{
     res.render('users/login.ejs');
 };
 module.exports.login = async (req,res,next)=>{
-    req.flash('success','Your logged in, Welcome to Wanderlust!');
+    req.flash('success','Your logged in, Welcome to Stay-Wander!');
     res.redirect(res.locals.redirectUrl || '/listings');
 };
 module.exports.logout = (req,res,next)=>{
