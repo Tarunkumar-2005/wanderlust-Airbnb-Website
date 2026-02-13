@@ -1,6 +1,6 @@
 # 🏡 Stay-Wander Website 
 
-Wanderlust is a full-stack Airbnb-inspired web application built using the **MERN Stack** (MongoDB, Express, React, Node.js). It allows users to browse, create, and book rental listings from around the world.
+Full-stack vacation rental web application using **MERN Stack**.It allows users to browse, create, and book rental listings from around the world.The backend is deployed on Render, the database is hosted on MongoDB Atlas, and the project is version-controlled using GitHub.
 
 🚀 Features
 
