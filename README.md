@@ -1,4 +1,4 @@
-# 🏡 Stay-Wander — Full-Stack Airbnb Clone
+# 🏡 Stay-Wander Full Stack Website
 
 Stay-Wander is a feature-rich, full-stack vacation rental web application inspired by Airbnb. Built using Node.js, Express.js, EJS templates, and MongoDB Atlas, it allows users to explore, search, filter, and manage rental listings around the world with interactive maps, host dashboards, and modern UI/UX aesthetics.
 
