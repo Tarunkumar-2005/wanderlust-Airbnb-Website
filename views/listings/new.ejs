@@ -1,63 +1,100 @@
 <% layout("/layouts/boilerPlate.ejs") %>
 
+<% 
+  const categories = [
+    "Trending", "Beach", "Mountains", "Camping", "Cabins", 
+    "Amazing Views", "Farms", "Cities", "Lakes", "Rooms", "Luxury"
+  ];
+%>
 
-<div class="row mt-3 mb-2">
-    <div class="col-8 offset-2">
-        <h3>Create a New list</h3>
-        <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input name="Listing[title]" placeholder="enter title" type="text" class="form-control" >
-                <!-- <div class="valid-feedback">
-                    Looks good!
-                </div> -->
-                <div class="invalid-feedback">
-                    please enter valid Title
-                </div>
-            </div>
+<div class="row justify-content-center my-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="card border-0 shadow-md p-4 p-md-5 rounded-4 bg-white">
+      <div class="mb-4 text-center">
+        <h2 class="fw-bold text-dark mb-1">Create a New Listing</h2>
+        <p class="text-muted small">Share your beautiful property with guests across the world.</p>
+      </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="Listing[description]" placeholder="enter description" class="form-control" ></textarea>
-                <div class="invalid-feedback">
-                    please enter short description
-                </div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="image" class="form-label">Image</label>
-                <input name="Listing[image]" type="file" class="form-control" required>
-            </div>
-            <div class="row">
-                <div class="mb-3 col-md-4">
-                <label for="price" class="form-label">Price</label>
-                    <input name="Listing[price]" placeholder="enter price" class="form-control" >
-                <div class="invalid-feedback">
-                    please enter valid price
-                </div>
-                </div>
+      <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+        <!-- Title Input -->
+        <div class="mb-3">
+          <label for="title" class="form-label fw-semibold">Title</label>
+          <input name="Listing[title]" placeholder="e.g. Modern Lakefront Villa with Sunset Views" type="text" class="form-control" required>
+          <div class="invalid-feedback">Please enter a valid listing title.</div>
+        </div>
 
-                <div class="mb-3 col-md-8">
-                    <label for="country" class="form-label">Country</label>
-                    <input name="Listing[country]" placeholder="enter country name" type="text" class="form-control" >
-                    <div class="invalid-feedback">
-                        please enter valid Country
-                    </div>
-                </div>
-            </div>
+        <!-- Description Input -->
+        <div class="mb-3">
+          <label for="description" class="form-label fw-semibold">Description</label>
+          <textarea name="Listing[description]" rows="4" placeholder="Describe the ambiance, amenities, and unique features..." class="form-control" required></textarea>
+          <div class="invalid-feedback">Please enter a short description.</div>
+        </div>
 
-            <div class="mb-3">
-                <label for="location" class="form-label">Location</label>
-                <input name="Listing[location]" placeholder="enter location" class="form-control" type="text" >
-                <div class="invalid-feedback">
-                    please enter valid Location
-                </div>
-                
-            </div> 
-            <button class="btn btn-dark add-btn mt-2">Add</button>
-            
-        </form>
+        <!-- Category Dropdown & Image Upload Row -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="category" class="form-label fw-semibold">Category</label>
+            <select name="Listing[category]" class="form-select" required>
+              <option value="" disabled selected>Select a category...</option>
+              <% for(let cat of categories) { %>
+                <option value="<%= cat %>"><%= cat %></option>
+              <% } %>
+            </select>
+            <div class="invalid-feedback">Please select a property category.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label for="image" class="form-label fw-semibold">Listing Image</label>
+            <input name="Listing[image]" type="file" class="form-control" required>
+            <div class="invalid-feedback">Please upload an image file.</div>
+          </div>
+        </div>
+
+        <!-- Price & Country Row -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-5">
+            <label for="price" class="form-label fw-semibold">Price per Night (&#8377;)</label>
+            <input name="Listing[price]" placeholder="e.g. 2500" type="number" min="0" class="form-control" required>
+            <div class="invalid-feedback">Please enter a valid price per night.</div>
+          </div>
+
+          <div class="col-md-7">
+            <label for="country" class="form-label fw-semibold">Country</label>
+            <input name="Listing[country]" placeholder="e.g. India, United States, Italy" type="text" class="form-control" required>
+            <div class="invalid-feedback">Please enter a valid country name.</div>
+          </div>
+        </div>
+
+        <!-- Location City Input -->
+        <div class="mb-3">
+          <label for="location" class="form-label fw-semibold">City / Location</label>
+          <input name="Listing[location]" placeholder="e.g. Malibu, New York, Jaipur" type="text" class="form-control" required>
+          <div class="invalid-feedback">Please enter a valid location or city name.</div>
+        </div>
+
+        <!-- Coordinates Optional Accordion/Row -->
+        <div class="border rounded-3 p-3 mb-4 bg-light-soft">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fw-bold small text-dark"><i class="fa-solid fa-map-pin me-1 text-brand"></i>Map Coordinates (Optional)</span>
+            <small class="text-muted">Auto-geocoded if left empty</small>
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <input name="lat" placeholder="Latitude (e.g. 26.9124)" type="number" step="any" class="form-control form-control-sm">
+            </div>
+            <div class="col-6">
+              <input name="lng" placeholder="Longitude (e.g. 75.7873)" type="number" step="any" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid">
+          <button class="btn btn-brand py-2.5 fw-bold fs-6">
+            <i class="fa-solid fa-plus-circle me-2"></i>Publish Listing
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
-
-

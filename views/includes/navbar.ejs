@@ -1,49 +1,73 @@
-
-<style>
-  .search-btn{
-    background-color: #fe424d;
-    color: white;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
-  }
-  
-  .search-btn i{
-    display: inline;
-    margin-right:0.5rem;
-  }
-
-  .search-inp{
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    
-  }
-</style>
-
-<nav class="navbar navbar-expand-md navbar-light bg-light border-bottom sticky-top">
+<nav class="navbar navbar-expand-md sticky-top py-2 bg-white">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+    <!-- Brand Logo -->
+    <a class="brand-logo" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      <span>StayWander</span>
+    </a>
 
-        <a class="nav-link" href="/listings">Explore</a>
-        
-      </div>
-      <!-- <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations" />
-          <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+    <!-- Navbar Toggler -->
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars fs-4 text-dark"></i>
+    </button>
+
+    <div class="collapse navbar-collapse mt-2 mt-md-0" id="navbarNav">
+      <!-- Search Bar Pill (Center) -->
+      <div class="mx-auto my-2 my-md-0 w-100" style="max-width: 480px;">
+        <form action="/listings" method="GET" class="navbar-search-bar">
+          <% if(typeof activeCategory !== 'undefined' && activeCategory) { %>
+            <input type="hidden" name="category" value="<%= activeCategory %>">
+          <% } %>
+          <input 
+            type="search" 
+            name="q" 
+            class="navbar-search-input" 
+            placeholder="Search destinations, titles, cities..." 
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+            aria-label="Search"
+          >
+          <button class="navbar-search-btn" type="submit" aria-label="Submit Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
         </form>
-      </div> -->
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Launch Rental</a>
+      </div>
+
+      <!-- Navigation Right Links -->
+      <div class="navbar-nav ms-auto align-items-md-center gap-1">
+        <a class="nav-link nav-link-custom" href="/listings">
+          <i class="fa-solid fa-compass me-1"></i>Explore
+        </a>
+
+        <% if(currUser) { %>
+          <a class="nav-link nav-link-custom" href="/dashboard">
+            <i class="fa-solid fa-chart-line me-1"></i>Dashboard
+          </a>
+        <% } %>
+
+        <a class="nav-link nav-link-custom" href="/listings/new">
+          <i class="fa-solid fa-plus me-1"></i>Launch Rental
+        </a>
+
         <% if(!currUser){ %>
-        <a class="nav-link" href="/signup"><b>Sign Up</b></a>
-        <a class="nav-link" href="/login"><b>Login</b></a>
+          <a class="nav-link nav-link-custom" href="/signup">Sign Up</a>
+          <a class="btn btn-brand px-3 py-1 ms-md-2" href="/login">Log In</a>
         <% } else { %>
-          <a class="nav-link" href="/logout">Logout</a>
+          <div class="dropdown ms-md-2 mt-2 mt-md-0">
+            <div class="user-menu-pill" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-bars text-muted"></i>
+              <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                <%= currUser.username.charAt(0).toUpperCase() %>
+              </div>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2 rounded-3">
+              <li><span class="dropdown-item-text text-muted small">Signed in as <b><%= currUser.username %></b></span></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/dashboard"><i class="fa-solid fa-chart-line me-2"></i>My Dashboard</a></li>
+              <li><a class="dropdown-item" href="/listings/new"><i class="fa-solid fa-plus me-2"></i>Create New Listing</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Log Out</a></li>
+            </ul>
+          </div>
         <% } %>
       </div>
     </div>

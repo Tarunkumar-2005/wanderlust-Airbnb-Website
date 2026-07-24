@@ -1,107 +1,265 @@
 <% layout("/layouts/boilerPlate.ejs") %>
 
-<div class="container mt-4">
-  <div class="row justify-content-center mb-3">
-    <div class="col-md-8 text-center">
-      <h1><%= list.title %></h1>
-    </div>
-  </div>
+<% 
+  const hasCoords = list.geometry && typeof list.geometry.lat === 'number' && typeof list.geometry.lng === 'number' && !isNaN(list.geometry.lat) && !isNaN(list.geometry.lng);
+%>
 
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-      <div class="card show-card listing-card" style="width: 100%;">
-        <img src="<%= list.image.url %>" class="card-img-top" alt="image">
-        <div class="card-body">
-          <p class="card-text">
-            <i>Owned by <%= list.owner.username %></i><br>
-            <%= list.description %><br>
-            &#8377; <%= list.price.toLocaleString("en-IN") %><br>
-            <%= list.location %><br>
-            <%= list.country %><br>
-          </p>
+<div class="row justify-content-center my-3">
+  <div class="col-lg-10">
+    <!-- Listing Title & Meta Header -->
+    <div class="mb-3">
+      <h1 class="show-title text-dark mb-2"><%= list.title %></h1>
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 text-muted small">
+        <div class="d-flex align-items-center gap-3">
+          <span><i class="fa-solid fa-location-dot text-brand me-1"></i><b><%= list.location %></b>, <%= list.country %></span>
+          <% if(list.category) { %>
+            <span class="badge bg-dark rounded-pill px-3 py-1.5"><%= list.category %></span>
+          <% } %>
+        </div>
+        <div>
+          <span>Hosted by <b><%= list.owner ? list.owner.username : 'Host' %></b></span>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row justify-content-center mt-3">
-    <% if(currUser && list.owner.equals(currUser._id)) { %>
-    <div class="col-auto">
-      <a href="/listings/<%= list._id %>/edit" class="btn edit-btn">Edit</a>
+    <!-- Listing Image Gallery Banner -->
+    <div class="show-img-container mb-4">
+      <img src="<%= list.image && list.image.url ? list.image.url : 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b' %>" 
+           class="show-img" 
+           alt="<%= list.title %>">
     </div>
-    <div class="col-auto">
-      <form method="POST" action="/listings/<%= list._id %>?_method=DELETE" onsubmit="return confirmDelete()">
-        <button class="btn btn-dark">Delete</button>
-      </form>
-    </div>
-    <% } %>
 
-    <div>
-      <% if(currUser) { %>
-      <hr>
-      <h2 >Leave your Review</h2>
+    <!-- Main Content Details & Host Box Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-7 col-lg-8">
+        <!-- Description -->
+        <div class="card border-0 shadow-sm p-4 rounded-4 mb-4 bg-white">
+          <h4 class="fw-bold mb-3">About this space</h4>
+          <p class="text-secondary leading-relaxed mb-0"><%= list.description %></p>
+        </div>
 
-      <form action="/listings/<%= list._id %>/reviews" method="POST" novalidate class="needs-validation">
-      <div >
-        <label for="rating" class="form-label">Rating</label>
-        <br>
-          <fieldset class="starability-fade">
-            <input type="radio" id="rate5" name="review[rating]" value="5" />
-            <label for="rate5"></label>
-            <input type="radio" id="rate4" name="review[rating]" value="4" />
-            <label for="rate4"></label>
-            <input type="radio" id="rate3" name="review[rating]" value="3" />
-            <label for="rate3"></label>
-            <input type="radio" id="rate2" name="review[rating]" value="2" />
-            <label for="rate2"></label>
-            <input type="radio" id="rate1" name="review[rating]" value="1" class="input-no-rate" checked aria-label="No rating"/>
-            <label for="rate1"></label>
-            
-        </fieldset>
-      </div>
-
-  <div>
-    <label for="comment" class="form-label">Comment</label><br>
-    <textarea required id="comment" name="review[comment]" class="form-control"></textarea>
-    <div class="invalid-feedback">Please enter a comment for review.</div>
-  </div>
-  <br>
-  <button class="btn btn-outline-dark">Submit</button>
-</form>
-
-      <% } %>
-
-      <% if(list.reviews.length>0){ %>
-      <hr>
-      <h4 class="text-center" style="color: blue;">All Reviews</h4>
-      <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% for(review of list.reviews) { %>
-    <div class="col mb-3">
-        <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title text-center">@<%= review.author.username %></h5>
-                
-                <div class="d-flex justify-content-center mb-2">
-                  <p class="starability-result text-center card-text" style="--rating: <%= review.rating %>;"></p>
-                </div>
-                <p class="card-text text-center mb-2"><%= review.comment %></p>
+        <!-- Interactive Leaflet Map Section -->
+        <div class="card border-0 shadow-sm p-4 rounded-4 bg-white mb-4">
+          <h4 class="fw-bold mb-3">
+            <i class="fa-solid fa-map-location-dot text-brand me-2"></i>Where you'll be
+          </h4>
+          <p class="text-muted small mb-3"><%= list.location %>, <%= list.country %></p>
+          
+          <% if(hasCoords) { %>
+            <div id="map"></div>
+          <% } else { %>
+            <div class="alert alert-light border rounded-3 p-4 text-center text-muted my-2">
+              <i class="fa-solid fa-location-slash fa-2x mb-2 text-danger opacity-75 d-block"></i>
+              <h6 class="fw-bold mb-1">Location not available</h6>
+              <p class="small mb-0">Exact coordinates could not be found for this listing location.</p>
             </div>
-            <form action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()" class="mb-2 text-center">
-                <button class="btn btn-sm btn-dark">Delete</button>
-            </form>
+          <% } %>
         </div>
+      </div>
+
+      <!-- Price & Host Card Sidebar -->
+      <div class="col-md-5 col-lg-4">
+        <div class="card border-0 shadow-md p-4 rounded-4 bg-white sticky-top" style="top: 90px; z-index: 10;">
+          <div class="d-flex align-items-baseline justify-content-between mb-3 pb-3 border-bottom">
+            <div>
+              <span class="fs-3 fw-bold text-dark">&#8377; <%= list.price ? list.price.toLocaleString("en-IN") : "0" %></span>
+              <span class="text-muted"> / night</span>
+            </div>
+            <span class="badge bg-light text-dark border"><i class="fa-solid fa-shield-halved text-success me-1"></i>Verified</span>
+          </div>
+
+          <div class="owner-badge-card mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 48px; height: 48px;">
+                <%= list.owner && list.owner.username ? list.owner.username.charAt(0).toUpperCase() : 'H' %>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0">Hosted by <%= list.owner ? list.owner.username : 'Host' %></h6>
+                <small class="text-muted">Superhost · Joined Recently</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Owner Action Controls (Edit / Delete) -->
+          <% if(currUser && list.owner && list.owner._id.equals(currUser._id)) { %>
+            <div class="d-flex gap-2 mt-3 pt-3 border-top">
+              <a href="/listings/<%= list._id %>/edit" class="btn btn-outline-dark flex-grow-1 rounded-pill fw-bold">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Edit
+              </a>
+              <form method="POST" action="/listings/<%= list._id %>?_method=DELETE" onsubmit="return confirmDelete()" class="flex-grow-1">
+                <button class="btn btn-brand w-100 rounded-pill fw-bold">
+                  <i class="fa-solid fa-trash me-1"></i> Delete
+                </button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      </div>
     </div>
-    <% } %>
-</div>
+
+    <!-- Reviews Section -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white mt-4">
+      <!-- Leave a Review Form (If Logged In) -->
+      <% if(currUser) { %>
+        <h4 class="fw-bold mb-3"><i class="fa-solid fa-star text-warning me-2"></i>Leave a Review</h4>
+        <form action="/listings/<%= list._id %>/reviews" method="POST" novalidate class="needs-validation mb-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold d-block">Rating</label>
+            <div class="star-rating-wrapper">
+              <div class="star-rating-input">
+                <input type="radio" id="rate5" name="review[rating]" value="5" required />
+                <label for="rate5" title="5 Stars - Outstanding"><i class="fa-solid fa-star"></i></label>
+
+                <input type="radio" id="rate4" name="review[rating]" value="4" />
+                <label for="rate4" title="4 Stars - Very Good"><i class="fa-solid fa-star"></i></label>
+
+                <input type="radio" id="rate3" name="review[rating]" value="3" />
+                <label for="rate3" title="3 Stars - Average"><i class="fa-solid fa-star"></i></label>
+
+                <input type="radio" id="rate2" name="review[rating]" value="2" />
+                <label for="rate2" title="2 Stars - Fair"><i class="fa-solid fa-star"></i></label>
+
+                <input type="radio" id="rate1" name="review[rating]" value="1" />
+                <label for="rate1" title="1 Star - Poor"><i class="fa-solid fa-star"></i></label>
+              </div>
+              <span id="ratingHintText" class="rating-text-hint">Select a star rating</span>
+            </div>
+            <div class="invalid-feedback">Please select a star rating for your review.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="comment" class="form-label fw-semibold">Comment</label>
+            <textarea required id="comment" name="review[comment]" rows="3" class="form-control" placeholder="Share details of your experience at this place..."></textarea>
+            <div class="invalid-feedback">Please enter a comment for your review.</div>
+          </div>
+
+          <button class="btn btn-dark-modern px-4">Submit Review</button>
+        </form>
+      <% } else { %>
+        <div class="alert alert-light border rounded-3 p-3 text-center mb-4">
+          <span class="text-muted"><a href="/login" class="fw-bold text-dark">Log in</a> to leave a review for this stay.</span>
+        </div>
+      <% } %>
+
+      <!-- All Reviews List -->
+      <% if(list.reviews && list.reviews.length > 0){ %>
+        <hr class="my-4">
+        <h4 class="fw-bold mb-4">
+          <i class="fa-solid fa-comments me-2 text-brand"></i>Guest Reviews (<%= list.reviews.length %>)
+        </h4>
+
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          <% for(let review of list.reviews) { %>
+            <div class="col">
+              <div class="card h-100 border p-3 rounded-3 shadow-none bg-light-soft">
+                <div class="card-body p-0">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-bold small" style="width: 32px; height: 32px;">
+                        <%= review.author && review.author.username ? review.author.username.charAt(0).toUpperCase() : 'U' %>
+                      </div>
+                      <h6 class="fw-bold mb-0">@<%= review.author ? review.author.username : 'User' %></h6>
+                    </div>
+
+                    <!-- Modern Star Badge -->
+                    <div class="review-star-rating" title="<%= review.rating %> out of 5 stars">
+                      <% for(let i = 1; i <= 5; i++) { %>
+                        <% if(i <= review.rating) { %>
+                          <i class="fa-solid fa-star"></i>
+                        <% } else { %>
+                          <i class="fa-solid fa-star star-empty"></i>
+                        <% } %>
+                      <% } %>
+                      <span class="review-star-score"><%= review.rating %>.0</span>
+                    </div>
+                  </div>
+                  <p class="card-text text-secondary small mb-3"><%= review.comment %></p>
+
+                  <% if(currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                    <form action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" onsubmit="return confirmDeleteReview()">
+                      <button class="btn btn-sm btn-outline-danger border-0 px-2 py-1 small">
+                        <i class="fa-solid fa-trash me-1"></i>Delete Review
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
       <% } %>
     </div>
   </div>
 </div>
-
-<br>
 
 <script>
   function confirmDelete() {
     return confirm("Are you sure you want to delete this listing?");
   }
+  function confirmDeleteReview() {
+    return confirm("Are you sure you want to delete your review?");
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const hintText = document.getElementById('ratingHintText');
+    const inputs = document.querySelectorAll('.star-rating-input input[type="radio"]');
+    const labels = {
+      '1': '1 Star - Poor',
+      '2': '2 Stars - Fair',
+      '3': '3 Stars - Good',
+      '4': '4 Stars - Very Good',
+      '5': '5 Stars - Outstanding'
+    };
+
+    if (hintText && inputs.length > 0) {
+      inputs.forEach(input => {
+        input.addEventListener('change', (e) => {
+          if (labels[e.target.value]) {
+            hintText.textContent = labels[e.target.value];
+            hintText.classList.add('text-dark', 'fw-bold');
+          }
+        });
+      });
+    }
+  });
 </script>
+
+<% if(hasCoords) { %>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const lat = <%= list.geometry.lat %>;
+    const lng = <%= list.geometry.lng %>;
+    const title = <%- JSON.stringify(list.title) %>;
+    const locationName = <%- JSON.stringify(list.location) %>;
+    const countryName = <%- JSON.stringify(list.country) %>;
+
+    const map = L.map('map').setView([lat, lng], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Custom marker icon
+    const customIcon = L.divIcon({
+      className: 'custom-leaflet-marker',
+      html: '<div style="background-color: #FF385C; color: white; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.35); border: 2.5px solid white;"><i class="fa-solid fa-house" style="font-size: 16px;"></i></div>',
+      iconSize: [38, 38],
+      iconAnchor: [19, 19],
+      popupAnchor: [0, -19]
+    });
+
+    const popupContent = `
+      <div class="custom-map-popup">
+        <h6 class="fw-bold mb-1">${title}</h6>
+        <p class="text-muted small mb-0"><i class="fa-solid fa-location-dot me-1 text-danger"></i>${locationName}, ${countryName}</p>
+      </div>
+    `;
+
+    L.marker([lat, lng], { icon: customIcon })
+      .addTo(map)
+      .bindPopup(popupContent)
+      .openPopup();
+  });
+</script>
+<% } %>

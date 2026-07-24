@@ -1,68 +1,76 @@
-.starability-fade {
-  display: inline-block;
-  direction: rtl;
-  font-size: 2rem;
-  unicode-bidi: bidi-override;
+/* ==========================================================================
+   Modern Star Rating System Styles
+   ========================================================================== */
+
+/* Modern Interactive Star Rating Input */
+.star-rating-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.starability-fade input {
-  display: none;
+.star-rating-input {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: 0.35rem;
+  align-items: center;
 }
 
-.starability-fade label {
-  display: inline-block;
+.star-rating-input input[type="radio"] {
+  display: none !important;
+}
+
+.star-rating-input label {
+  font-size: 1.65rem;
+  color: #dddddd;
   cursor: pointer;
-  width: 1em;
-  color: #ccc; /* empty star color */
-}
-
-.starability-fade label:before {
-  content: "★";
-}
-
-.starability-fade input:checked ~ label,
-.starability-fade label:hover,
-.starability-fade label:hover ~ label {
-  color: gold; /* filled star color */
-}
-
-
-.starability-result {
-  position: relative;
-  display: inline-block;
-  font-size: 24px;
-  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
   line-height: 1;
-  --rating: 0; /* default */
+  transition: color 0.15s ease-in-out, transform 0.15s ease-in-out;
 }
 
-.starability-result::before {
-  content: "★★★★★"; /* base stars */
-  letter-spacing: 3px;
-  background: linear-gradient(
-    90deg,                          /* → left to right fill */
-    gold calc(var(--rating) / 5 * 100%),
-    #ccc calc(var(--rating) / 5 * 100%)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: block;
+.star-rating-input label:hover,
+.star-rating-input label:hover ~ label,
+.star-rating-input input[type="radio"]:checked ~ label {
+  color: #ffb400;
 }
 
-
-.starability-result::after {
-  content: "★★★★★";     /* overlay filled stars */
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: gold;
-  width: 0;             /* default no fill */
-  overflow: hidden;
+.star-rating-input label:hover {
+  transform: scale(1.22);
 }
 
-/* Map data-rating to width in stars (each star = 20%) */
-.starability-result[data-rating="1"]::after { width: 20%; }
-.starability-result[data-rating="2"]::after { width: 40%; }
-.starability-result[data-rating="3"]::after { width: 60%; }
-.starability-result[data-rating="4"]::after { width: 80%; }
-.starability-result[data-rating="5"]::after { width: 100%; }
+/* Rating Text Label Indicator */
+.rating-text-hint {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #717171;
+}
+
+/* Star Rating Display Badge for Reviews */
+.review-star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: #ffb400;
+  font-size: 0.95rem;
+}
+
+.review-star-rating .star-empty {
+  color: #e0e0e0;
+}
+
+.review-star-score {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #222222;
+  margin-left: 0.25rem;
+}
+
+/* Legacy Starability compatibility fallback */
+.starability-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #ffb400;
+}

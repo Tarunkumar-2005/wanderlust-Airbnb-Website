@@ -1,14 +1,61 @@
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-square-facebook"></i>
-            <i class="fa-brands fa-square-instagram"></i>
-            <i class="fa-brands fa-linkedin"></i>
-        </div>
-        <div class="f-info-brand">&copy Stay-Wander Private Limited</div>
-        <div class="f-info-links">
-            <a href="/">privacy</a>
-            <a href="/">terms</a>
-        </div>
+<div class="container py-4">
+  <div class="row gy-4 text-center text-md-start">
+    <div class="col-md-4">
+      <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
+        <i class="fa-solid fa-compass text-brand fs-4"></i>
+        <span class="fw-bold fs-5 text-dark">StayWander</span>
+      </div>
+      <p class="text-muted small mb-3">Discover unique homes, villas, cabins, and beachfront retreats around the world.</p>
+      <div class="d-flex gap-3 justify-content-center justify-content-md-start fs-5 text-muted">
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook hover-brand"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram hover-brand"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter hover-brand"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin hover-brand"></i></a>
+      </div>
     </div>
-</footer>
+
+    <div class="col-6 col-md-3">
+      <h6 class="fw-bold text-dark mb-3">Support & Community</h6>
+      <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+        <li><a href="/listings">Explore All Homes</a></li>
+        <li><a href="/listings/new">Host Your Space</a></li>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Safety & Cancellation</a></li>
+      </ul>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <h6 class="fw-bold text-dark mb-3">Company</h6>
+      <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-2 text-center text-md-end">
+      <div class="d-inline-flex align-items-center gap-2 border rounded-pill px-3 py-1 bg-light small mb-2">
+        <i class="fa-solid fa-globe text-muted"></i>
+        <span>English (US)</span>
+      </div>
+      <div class="d-inline-flex align-items-center gap-2 border rounded-pill px-3 py-1 bg-light small">
+        <span class="fw-bold">₹</span>
+        <span>INR</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-4 text-muted opacity-25">
+
+  <div class="d-flex flex-column flex-md-row align-items-center justify-content-between small text-muted gap-2">
+    <div>&copy; <%= new Date().getFullYear() %> StayWander Inc. All rights reserved.</div>
+    <div class="d-flex gap-3">
+      <a href="#" class="text-muted">Privacy</a>
+      <span>·</span>
+      <a href="#" class="text-muted">Terms</a>
+      <span>·</span>
+      <a href="#" class="text-muted">Sitemap</a>
+    </div>
+  </div>
+</div>

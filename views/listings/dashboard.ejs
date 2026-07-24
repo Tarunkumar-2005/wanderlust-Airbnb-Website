@@ -1,0 +1,198 @@
+<% layout("/layouts/boilerPlate.ejs") %>
+
+<% 
+  const categories = [
+    { name: "Trending", icon: "fa-fire" },
+    { name: "Beach", icon: "fa-umbrella-beach" },
+    { name: "Mountains", icon: "fa-mountain" },
+    { name: "Camping", icon: "fa-campground" },
+    { name: "Cabins", icon: "fa-house-chimney-window" },
+    { name: "Amazing Views", icon: "fa-eye" },
+    { name: "Farms", icon: "fa-cow" },
+    { name: "Cities", icon: "fa-city" },
+    { name: "Lakes", icon: "fa-water" },
+    { name: "Rooms", icon: "fa-bed" },
+    { name: "Luxury", icon: "fa-gem" }
+  ];
+%>
+
+<div class="container my-3">
+  <!-- Dashboard Header Banner -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 pb-3 border-bottom">
+    <div>
+      <h2 class="fw-extrabold text-dark mb-1">Host Dashboard</h2>
+      <p class="text-muted mb-0">Manage your rental properties, explore stats, and add new listings.</p>
+    </div>
+    <a href="/listings/new" class="btn btn-brand px-4 py-2 d-inline-flex align-items-center gap-2">
+      <i class="fa-solid fa-plus fs-6"></i>
+      <span>Add New Listing</span>
+    </a>
+  </div>
+
+  <!-- Dashboard Stats Counter Cards Row -->
+  <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+    <div class="col">
+      <div class="dashboard-stat-card h-100">
+        <div class="stat-icon-wrapper stat-icon-red">
+          <i class="fa-solid fa-house-user"></i>
+        </div>
+        <div class="stat-number"><%= userListingsCount %></div>
+        <div class="stat-label">Your Active Listings</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="dashboard-stat-card h-100">
+        <div class="stat-icon-wrapper stat-icon-dark">
+          <i class="fa-solid fa-globe"></i>
+        </div>
+        <div class="stat-number"><%= totalListings %></div>
+        <div class="stat-label">Platform Total Listings</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="dashboard-stat-card h-100">
+        <div class="stat-icon-wrapper stat-icon-dark">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div class="stat-number"><%= categoriesCount %></div>
+        <div class="stat-label">Active Property Categories</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Internal Search & Filters Bar -->
+  <div class="bg-white border rounded-4 p-3 p-md-4 mb-4 shadow-sm">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-6 col-lg-7">
+        <form action="/dashboard" method="GET" class="navbar-search-bar w-100 max-w-none me-0">
+          <% if(activeCategory) { %>
+            <input type="hidden" name="category" value="<%= activeCategory %>">
+          <% } %>
+          <input 
+            type="search" 
+            name="q" 
+            class="navbar-search-input" 
+            placeholder="Search your listings by title, location, country..." 
+            value="<%= searchQuery %>"
+          >
+          <button class="navbar-search-btn" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="col-md-6 col-lg-5 text-md-end">
+        <div class="dropdown d-inline-block w-100 w-md-auto">
+          <button class="btn btn-outline-dark dropdown-toggle w-100 rounded-pill px-4 py-2 fw-semibold" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-filter me-2 text-brand"></i>
+            <%= activeCategory ? 'Category: ' + activeCategory : 'Filter by Category' %>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 mt-2" style="max-height: 320px; overflow-y: auto;">
+            <li>
+              <a class="dropdown-item <%= !activeCategory ? 'fw-bold active' : '' %>" 
+                 href="/dashboard<%= searchQuery ? '?q=' + encodeURIComponent(searchQuery) : '' %>">
+                 All Categories
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <% for(let cat of categories) { %>
+              <% 
+                let catUrl = '/dashboard?category=' + encodeURIComponent(cat.name);
+                if (searchQuery) catUrl += '&q=' + encodeURIComponent(searchQuery);
+              %>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 <%= activeCategory === cat.name ? 'fw-bold active' : '' %>" 
+                   href="<%= catUrl %>">
+                   <i class="fa-solid <%= cat.icon %> text-muted small"></i>
+                   <span><%= cat.name %></span>
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <% if(searchQuery || activeCategory) { %>
+      <div class="d-flex align-items-center justify-content-between mt-3 pt-3 border-top small text-muted">
+        <div>
+          Filtered by: 
+          <% if(searchQuery) { %> <b>"<%= searchQuery %>"</b> <% } %>
+          <% if(activeCategory) { %> <span class="badge bg-dark rounded-pill ms-1"><%= activeCategory %></span> <% } %>
+        </div>
+        <a href="/dashboard" class="text-danger fw-bold text-decoration-none small">
+          <i class="fa-solid fa-xmark me-1"></i>Reset Filters
+        </a>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- User Managed Listings Grid -->
+  <h4 class="fw-bold mb-3 text-dark">
+    <i class="fa-solid fa-list-check me-2 text-brand"></i>My Managed Listings (<%= myListings.length %>)
+  </h4>
+
+  <% if(myListings.length > 0) { %>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+      <% for(let list of myListings) { %>
+        <div class="col">
+          <div class="listing-card card h-100 bg-white border shadow-sm">
+            <div class="card-img-wrapper">
+              <img src="<%= list.image && list.image.url ? list.image.url : 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b' %>" 
+                   class="card-img-top" 
+                   alt="<%= list.title %>">
+              <% if(list.category) { %>
+                <span class="category-pill-badge"><%= list.category %></span>
+              <% } %>
+            </div>
+
+            <div class="card-body p-3">
+              <div class="listing-title mb-1"><%= list.title %></div>
+              <div class="listing-location small text-muted mb-2"><%= list.location %>, <%= list.country %></div>
+              <div class="listing-price mb-3">
+                <span class="fw-bold">&#8377; <%= list.price ? list.price.toLocaleString("en-IN") : "0" %></span>
+                <span class="text-muted fw-normal small">/ night</span>
+              </div>
+
+              <!-- Quick Dashboard Action Buttons -->
+              <div class="d-flex gap-2 pt-2 border-top">
+                <a href="/listings/<%= list._id %>" class="btn btn-sm btn-outline-dark flex-grow-1 rounded-pill fw-semibold">
+                  <i class="fa-solid fa-eye me-1"></i>View
+                </a>
+                <a href="/listings/<%= list._id %>/edit" class="btn btn-sm btn-dark-modern flex-grow-1 rounded-pill fw-semibold">
+                  <i class="fa-solid fa-pen me-1"></i>Edit
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  <% } else { %>
+    <!-- Empty State Box -->
+    <div class="empty-state-box my-4">
+      <div class="empty-state-icon">
+        <i class="fa-solid fa-house-circle-exclamation text-muted"></i>
+      </div>
+      <h4 class="fw-bold mb-2">No listings found in your dashboard</h4>
+      <p class="text-muted max-w-md mx-auto mb-4" style="max-width: 480px;">
+        <% if(searchQuery || activeCategory) { %>
+          No listings matched your active dashboard search filters. Try clearing your filters.
+        <% } else { %>
+          You haven't published any listings yet! Click the button below to host your first rental property.
+        <% } %>
+      </p>
+      <% if(searchQuery || activeCategory) { %>
+        <a href="/dashboard" class="btn btn-outline-dark px-4 py-2 me-2">
+          <i class="fa-solid fa-xmark me-2"></i>Clear Filters
+        </a>
+      <% } else { %>
+        <a href="/listings/new" class="btn btn-brand px-4 py-2">
+          <i class="fa-solid fa-plus me-2"></i>Create Your First Listing
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>

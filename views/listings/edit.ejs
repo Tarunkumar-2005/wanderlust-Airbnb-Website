@@ -1,73 +1,107 @@
 <% layout("/layouts/boilerPlate.ejs") %>
 
+<% 
+  const categories = [
+    "Trending", "Beach", "Mountains", "Camping", "Cabins", 
+    "Amazing Views", "Farms", "Cities", "Lakes", "Rooms", "Luxury"
+  ];
+%>
 
-<div class="row mt-3 mb-3">
-    <div class="col-8 offset-2">
-        <h3>Edit list</h3>
-        <form method="POST" action="/listings/<%= list._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input name="Listing[title]" value="<%= list.title %>" type="text" class="form-control" required>
-                <div class="invalid-feedback">
-                    please enter valid price
-                </div>
-                <div class="valid-feedback">
-                    Title
-                </div>
-            </div>
+<div class="row justify-content-center my-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="card border-0 shadow-md p-4 p-md-5 rounded-4 bg-white">
+      <div class="mb-4 text-center">
+        <h2 class="fw-bold text-dark mb-1">Edit Listing</h2>
+        <p class="text-muted small">Update details for <b>"<%= list.title %>"</b></p>
+      </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="Listing[description]" class="form-control" required><%= list.description %></textarea>
-                <div class="invalid-feedback">
-                    please enter short description
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Current Image</label>
-                <br>
-                <img src="<%= originalImageUrl %>" alt="img" height="200px" width="300px">
-            </div>
-            <div class="mb-3">
-                <label for="image" class="form-label">Upload New Image</label>
-                <input name="Listing[image]" type="file" class="form-control">
-                <div class="invalid-feedback">
-                    please enter valid Image link
-                </div>
-            </div>
-            <div class="row">
-                <div class="mb-3 col-md-4">
-                <label for="price" class="form-label">Price</label>
-                <input name="Listing[price]" value="<%= list.price %>" type="number" class="form-control" required >
-                <div class="invalid-feedback">
-                    please enter valid price
-                </div>
-            </div>
+      <form method="POST" action="/listings/<%= list._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+        <!-- Title Input -->
+        <div class="mb-3">
+          <label for="title" class="form-label fw-semibold">Title</label>
+          <input name="Listing[title]" value="<%= list.title %>" type="text" class="form-control" required>
+          <div class="invalid-feedback">Please enter a valid title.</div>
+        </div>
 
-                <div class="mb-3 col-md-8">
-                    <label for="country" class="form-label">Country</label>
-                    <input name="Listing[country]" value="<%= list.location %>" type="text" class="form-control" required>
-                <div class="invalid-feedback">
-                    please enter valid Country
-                </div>
-                </div>
-            </div>
+        <!-- Description Input -->
+        <div class="mb-3">
+          <label for="description" class="form-label fw-semibold">Description</label>
+          <textarea name="Listing[description]" rows="4" class="form-control" required><%= list.description %></textarea>
+          <div class="invalid-feedback">Please enter a short description.</div>
+        </div>
 
-            <div class="mb-3">
-                <label for="location" class="form-label">Location</label>
-                <input name="Listing[location]" value="<%= list.country %>" class="form-control" type="text" required>
-                <div class="invalid-feedback">
-                    please enter valid price
-                </div>
-            </div>
-            <br>
+        <!-- Category Dropdown & Image Section -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="category" class="form-label fw-semibold">Category</label>
+            <select name="Listing[category]" class="form-select" required>
+              <% for(let cat of categories) { %>
+                <option value="<%= cat %>" <%= list.category === cat ? 'selected' : '' %>><%= cat %></option>
+              <% } %>
+            </select>
+            <div class="invalid-feedback">Please select a property category.</div>
+          </div>
 
-            <button class="btn btn-dark mt-2 edit-btn">Edit</button>
-            <br>
-        </form>
+          <div class="col-md-6">
+            <label for="image" class="form-label fw-semibold">Upload New Image (Optional)</label>
+            <input name="Listing[image]" type="file" class="form-control">
+          </div>
+        </div>
+
+        <!-- Current Image Preview Box -->
+        <% if(originalImageUrl) { %>
+          <div class="mb-3 p-3 bg-light rounded-3 d-inline-block">
+            <label class="form-label fw-semibold text-muted d-block small mb-2">Current Image Preview</label>
+            <img src="<%= originalImageUrl %>" alt="Current Image" class="rounded-3 shadow-sm" style="max-height: 160px; object-fit: cover;">
+          </div>
+        <% } %>
+
+        <!-- Price & Country Row -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-5">
+            <label for="price" class="form-label fw-semibold">Price per Night (&#8377;)</label>
+            <input name="Listing[price]" value="<%= list.price %>" type="number" min="0" class="form-control" required>
+            <div class="invalid-feedback">Please enter a valid price.</div>
+          </div>
+
+          <div class="col-md-7">
+            <label for="country" class="form-label fw-semibold">Country</label>
+            <input name="Listing[country]" value="<%= list.country %>" type="text" class="form-control" required>
+            <div class="invalid-feedback">Please enter a valid country name.</div>
+          </div>
+        </div>
+
+        <!-- Location Input -->
+        <div class="mb-3">
+          <label for="location" class="form-label fw-semibold">City / Location</label>
+          <input name="Listing[location]" value="<%= list.location %>" type="text" class="form-control" required>
+          <div class="invalid-feedback">Please enter a valid location.</div>
+        </div>
+
+        <!-- Coordinates Optional Accordion/Row -->
+        <div class="border rounded-3 p-3 mb-4 bg-light-soft">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fw-bold small text-dark"><i class="fa-solid fa-map-pin me-1 text-brand"></i>Map Coordinates (Optional)</span>
+            <small class="text-muted">Auto-geocoded if empty</small>
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <input name="lat" value="<%= list.geometry && list.geometry.lat ? list.geometry.lat : '' %>" placeholder="Latitude" type="number" step="any" class="form-control form-control-sm">
+            </div>
+            <div class="col-6">
+              <input name="lng" value="<%= list.geometry && list.geometry.lng ? list.geometry.lng : '' %>" placeholder="Longitude" type="number" step="any" class="form-control form-control-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2">
+          <button class="btn btn-brand py-2.5 flex-grow-1 fw-bold fs-6">
+            <i class="fa-solid fa-floppy-disk me-2"></i>Save Changes
+          </button>
+          <a href="/listings/<%= list._id %>" class="btn btn-outline-secondary py-2.5 px-4 rounded-pill fw-bold">Cancel</a>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
-
-
-
-

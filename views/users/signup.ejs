@@ -1,25 +1,43 @@
 <% layout("/layouts/boilerPlate.ejs") %>
 
-<div class="row mt-3">
-    <h3 class="text-center">Sign Up for Stay-Wander</h3>
-    <div class="col-8 offset-2">
+<div class="row justify-content-center my-5">
+  <div class="col-12 col-md-8 col-lg-5">
+    <div class="card border-0 shadow-md p-4 p-md-5 rounded-4 bg-white">
+      <div class="text-center mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center bg-light text-brand rounded-circle mb-3" style="width: 56px; height: 56px;">
+          <i class="fa-solid fa-user-plus fs-3"></i>
+        </div>
+        <h3 class="fw-extrabold text-dark mb-1">Create your account</h3>
+        <p class="text-muted small">Join StayWander to discover and host unique stays.</p>
+      </div>
+
+      <form action="/signup" method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label fw-semibold">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+          <div class="invalid-feedback">Please choose a username.</div>
+        </div>
         
-        <form action="/signup" method="POST" class="needs-validation" novalidate >
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-                <div class="valid-feedback">Looks good!</div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-success mb-3">Sign Up</button>
-        </form>
+        <div class="mb-3">
+          <label for="email" class="form-label fw-semibold">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+          <div class="invalid-feedback">Please enter a valid email address.</div>
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="form-label fw-semibold">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+          <div class="invalid-feedback">Please create a password.</div>
+        </div>
+
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-brand py-2.5 fw-bold fs-6">Sign Up</button>
+        </div>
+      </form>
+
+      <div class="text-center mt-3 pt-3 border-top small text-muted">
+        Already have an account? <a href="/login" class="fw-bold text-dark text-decoration-none">Log in</a>
+      </div>
     </div>
+  </div>
 </div>

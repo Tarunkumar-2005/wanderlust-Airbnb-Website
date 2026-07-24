@@ -11,7 +11,7 @@ const upload = multer({ storage });
 //index and create route
 router
   .route("/")
-  .get(isLoggedIn, wrapAsync(listingController.index))
+  .get(wrapAsync(listingController.index))
   // .post(isLoggedIn,validateListing,wrapAsync(listingController.createListing));
   .post(
     isLoggedIn,
@@ -19,6 +19,8 @@ router
     upload.single("Listing[image]"),
     wrapAsync(listingController.createListing)
   );
+// dashboard route
+router.get("/dashboard", isLoggedIn, wrapAsync(listingController.renderDashboard));
 //new route
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 //show , update and delete route

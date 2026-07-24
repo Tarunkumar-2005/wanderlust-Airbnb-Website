@@ -1,20 +1,37 @@
 <% layout("/layouts/boilerPlate.ejs") %>
 
-<div class="row mt-3">
-    <h3 class="text-center">Login for Stay-Wander</h3>
-    <div class="col-8 offset-2">
+<div class="row justify-content-center my-5">
+  <div class="col-12 col-md-8 col-lg-5">
+    <div class="card border-0 shadow-md p-4 p-md-5 rounded-4 bg-white">
+      <div class="text-center mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center bg-light text-brand rounded-circle mb-3" style="width: 56px; height: 56px;">
+          <i class="fa-solid fa-compass fs-2"></i>
+        </div>
+        <h3 class="fw-extrabold text-dark mb-1">Welcome back</h3>
+        <p class="text-muted small">Log in to manage your listings and bookings.</p>
+      </div>
+
+      <form action="/login" method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label fw-semibold">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+          <div class="invalid-feedback">Please enter your username.</div>
+        </div>
         
-        <form action="/login" method="POST" class="needs-validation" novalidate >
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary mb-3">Log In</button>
-        </form>
+        <div class="mb-4">
+          <label for="password" class="form-label fw-semibold">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+          <div class="invalid-feedback">Please enter your password.</div>
+        </div>
+
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-brand py-2.5 fw-bold fs-6">Log In</button>
+        </div>
+      </form>
+
+      <div class="text-center mt-3 pt-3 border-top small text-muted">
+        Don't have an account? <a href="/signup" class="fw-bold text-dark text-decoration-none">Sign up</a>
+      </div>
     </div>
+  </div>
 </div>
